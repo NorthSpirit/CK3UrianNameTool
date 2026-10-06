@@ -21,6 +21,10 @@
                 <button class="filter-btn" data-filter="female">Female</button>
                 <button class="filter-btn" data-filter="male">Male</button>
             </div>
+            <div class="filter-buttons">
+                <button class="filter-btn sort-btn active" data-sort="alpha">A-Z</button>
+                <button class="filter-btn sort-btn" data-sort="usage">Most Used</button>
+            </div>
         </div>
 
         <div class="stats">
@@ -62,6 +66,7 @@
 
         let nameCounts = {};
         let currentFilter = 'all';
+        let currentSort = localStorage.getItem('LTNamesSort') || 'alpha';
 
         // Cookie functions
         function saveToCookie() {
@@ -117,6 +122,9 @@
                 (currentFilter === 'all' || currentFilter === 'male')
             );
 
+            filteredFemale.sort(compareNames);
+            filteredMale.sort(compareNames);
+
             if (filteredFemale.length === 0 && currentFilter !== 'male') {
                 femaleList.innerHTML = '<div class="empty-message">No female names found</div>';
             } else {
@@ -132,6 +140,14 @@
                     maleList.appendChild(createNameItem(name));
                 });
             }
+        }
+
+        function compareNames(a, b) {
+            if (currentSort === 'usage') {
+                const diff = nameCounts[b] - nameCounts[a];
+                if (diff !== 0) return diff;
+            }
+            return a.localeCompare(b, 'lt');
         }
 
         function createNameItem(name) {
@@ -179,11 +195,22 @@
         // Event listeners
         document.getElementById('searchInput').addEventListener('input', renderLists);
         
-        document.querySelectorAll('.filter-btn').forEach(btn => {
+        document.querySelectorAll('.filter-btn[data-filter]').forEach(btn => {
             btn.addEventListener('click', (e) => {
-                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.filter-btn[data-filter]').forEach(b => b.classList.remove('active'));
                 e.target.classList.add('active');
                 currentFilter = e.target.dataset.filter;
+                renderLists();
+            });
+        });
+
+        document.querySelectorAll('.sort-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.sort === currentSort);
+            btn.addEventListener('click', (e) => {
+                document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
+                e.target.classList.add('active');
+                currentSort = e.target.dataset.sort;
+                localStorage.setItem('LTNamesSort', currentSort);
                 renderLists();
             });
         });
