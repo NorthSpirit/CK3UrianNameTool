@@ -1,0 +1,357 @@
+/*
+ * =========================================================
+ * Lithuanian Names Tracker – Alt Colour Scheme CSS
+ * Blue palette + Lexend, matching the Grand Menu Service
+ * theme. Layout is identical to lithuanian-names.css.
+ * =========================================================
+ *
+ * Palette
+ *   #37488d  primary blue        #9eccfa  light blue
+ *   #e7f3ff  content background  #1b1c70  main navy text
+ *   #121036  dark text           #030408  borders / near-black
+ *   #40bd34  green               #f36262  red
+ *   #b88700  gold                #51ddf0  cyan
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Lexend:wght@400;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+    -webkit-font-smoothing: none;
+}
+
+a {
+    color: inherit;
+}
+
+body {
+    font-family: 'Lexend', sans-serif;
+    font-weight: bold;
+    letter-spacing: 0.02em;
+    word-spacing: normal;
+    background-color: #37488d;
+    min-height: 100vh;
+    padding: 20px;
+    color: #1b1c70;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+header h1 {
+    font-size: 2.2rem;
+    margin-bottom: 10px;
+    color: #e7f3ff;
+    text-shadow:
+        2px 2px 0 #030408,
+        -2px 2px 0 #030408,
+        2px -2px 0 #030408,
+        -2px -2px 0 #030408;
+}
+
+header p {
+    color: #9eccfa;
+    font-size: 1rem;
+}
+
+.controls {
+    background-color: #e7f3ff;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 4px 4px 0px 0px #030408;
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    align-items: center;
+    border: 4px solid #030408;
+    border-radius: 0;
+}
+
+.controls input {
+    flex: 1;
+    min-width: 250px;
+    padding: 12px 15px;
+    border: 4px solid #37488d;
+    border-radius: 0;
+    font-family: 'Lexend', sans-serif;
+    font-weight: bold;
+    letter-spacing: 0.02em;
+    font-size: 0.95rem;
+    background-color: #ffffff;
+    color: #121036;
+    transition: all 0.1s;
+}
+
+.controls input:focus {
+    outline: none;
+    border-color: #b88700;
+    box-shadow: 4px 4px 0px 0px rgba(184, 135, 0, 0.5);
+}
+
+.filter-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.filter-btn {
+    padding: 10px 15px;
+    border: 4px solid #37488d;
+    background-color: #e7f3ff;
+    color: #121036;
+    border-radius: 0;
+    cursor: pointer;
+    font-weight: bold;
+    font-family: 'Lexend', sans-serif;
+    letter-spacing: 0.02em;
+    font-size: 0.95rem;
+    transition: all 0.1s;
+}
+
+.filter-btn.active {
+    background-color: #37488d;
+    color: #e7f3ff;
+    border-color: #030408;
+    box-shadow: 4px 4px 0px 0px rgba(3, 4, 8, 0.5);
+}
+
+.filter-btn:active {
+    background-color: #9eccfa;
+    transform: scale(0.95);
+}
+
+.stats {
+    background-color: #e7f3ff;
+    padding: 15px 20px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-around;
+    box-shadow: 4px 4px 0px 0px #030408;
+    border: 4px solid #030408;
+    border-radius: 0;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.stat-item {
+    text-align: center;
+}
+
+.stat-label {
+    font-size: 0.8rem;
+    color: #121036;
+    margin-bottom: 5px;
+}
+
+.stat-value {
+    font-size: 1.6rem;
+    font-weight: bold;
+    color: #1b1c70;
+    text-shadow: 1px 1px 0 #9eccfa;
+}
+
+.lists-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+@media (max-width: 768px) {
+    .lists-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+.list-section {
+    background-color: #e7f3ff;
+    border-radius: 0;
+    overflow: hidden;
+    box-shadow: 4px 4px 0px 0px #030408;
+    border: 4px solid #030408;
+}
+
+.list-header {
+    padding: 15px;
+    background-color: #37488d;
+    color: #e7f3ff;
+    font-size: 1.2rem;
+    font-weight: bold;
+    border-bottom: 4px solid #030408;
+}
+
+.list-header.female {
+    background-color: #9eccfa;
+    color: #121036;
+}
+
+.names-list {
+    max-height: 600px;
+    overflow-y: auto;
+    padding: 10px;
+}
+
+.name-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 15px;
+    border-bottom: 2px solid #9eccfa;
+    transition: background 0.1s;
+}
+
+.name-item:hover {
+    background-color: #9eccfa;
+}
+
+.name-item:last-child {
+    border-bottom: none;
+}
+
+.name-text {
+    flex: 1;
+    font-weight: bold;
+    color: #121036;
+    font-size: 1.05rem;
+}
+
+.name-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.btn-count {
+    min-width: 40px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.2rem;
+    color: #1b1c70;
+    font-family: 'Lexend', sans-serif;
+}
+
+.btn-minus, .btn-plus {
+    width: 36px;
+    height: 36px;
+    border: 3px solid #030408;
+    border-radius: 0;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1.4rem;
+    transition: all 0.1s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Lexend', sans-serif;
+    line-height: 1;
+    padding: 0;
+}
+
+.btn-minus {
+    background-color: #f36262;
+    color: #030408;
+}
+
+.btn-minus:active {
+    background-color: #030408;
+    color: #f36262;
+    transform: scale(0.95);
+}
+
+.btn-plus {
+    background-color: #40bd34;
+    color: #030408;
+}
+
+.btn-plus:active {
+    background-color: #030408;
+    color: #40bd34;
+    transform: scale(0.95);
+}
+
+.empty-message {
+    text-align: center;
+    padding: 40px 20px;
+    color: #121036;
+    font-size: 0.95rem;
+}
+
+.button-row {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 20px;
+}
+
+.reset-btn {
+    padding: 12px 30px;
+    background-color: #f36262;
+    color: #030408;
+    border: 4px solid #030408;
+    border-radius: 0;
+    font-size: 1rem;
+    font-weight: bold;
+    font-family: 'Lexend', sans-serif;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    transition: all 0.1s;
+    box-shadow: 4px 4px 0px 0px #030408;
+}
+
+.reset-btn:active {
+    background-color: #030408;
+    color: #f36262;
+    transform: scale(0.95);
+}
+
+.palette-swap-btn {
+    padding: 12px 30px;
+    background-color: #37488d;
+    color: #e7f3ff;
+    border: 4px solid #030408;
+    border-radius: 0;
+    font-size: 1rem;
+    font-weight: bold;
+    font-family: 'Lexend', sans-serif;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    transition: all 0.1s;
+    box-shadow: 4px 4px 0px 0px #030408;
+}
+
+.palette-swap-btn:active {
+    background-color: #9eccfa;
+    color: #121036;
+    transform: scale(0.95);
+}
+
+::-webkit-scrollbar {
+    width: 12px;
+}
+
+::-webkit-scrollbar-track {
+    background: #e7f3ff;
+    border: 2px solid #9eccfa;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #37488d;
+    border: 2px solid #030408;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #1b1c70;
+}

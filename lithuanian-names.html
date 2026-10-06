@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lithuanian Names Tracker</title>
+    <link id="themeCSS" rel="stylesheet" href="lithuanian-names.css">
+    <link id="themeCSSAlt" rel="stylesheet" href="lithuanian-names-alt.css" disabled>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🇱🇹 Lithuanian Names</h1>
+            <p>Track your favorite names by usage</p>
+        </header>
+
+        <div class="controls">
+            <input type="text" id="searchInput" placeholder="Search names...">
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="female">Female</button>
+                <button class="filter-btn" data-filter="male">Male</button>
+            </div>
+        </div>
+
+        <div class="stats">
+            <div class="stat-item">
+                <div class="stat-label">Total Names</div>
+                <div class="stat-value" id="totalCount">0</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label">Total Uses</div>
+                <div class="stat-value" id="totalUses">0</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label">Most Used</div>
+                <div class="stat-value" id="mostUsed">-</div>
+            </div>
+        </div>
+
+        <div class="lists-container">
+            <div class="list-section">
+                <div class="list-header female">👩 Female Names</div>
+                <div class="names-list" id="femaleList"></div>
+            </div>
+            <div class="list-section">
+                <div class="list-header">👨 Male Names</div>
+                <div class="names-list" id="maleList"></div>
+            </div>
+        </div>
+
+        <div class="button-row">
+            <button class="reset-btn" id="resetBtn">Reset All Counts</button>
+            <button class="palette-swap-btn" id="paletteSwapBtn">Palette Swap</button>
+        </div>
+    </div>
+
+    <script>
+        const femaleNames = ["Aglaja", "Agnieta", "Aigustė", "Aistė", "Akvilė", "Adelaida", "Audra", "Aušra", "Birutė", "Dainė", "Dina", "Dovilė", "Eglė", "Elinga", "Emilija", "Gabija", "Indrė", "Jaunutė", "Juratė", "Kena", "Laima", "Liepa", "Lina", "Liulija", "Lukrecija", "Lūšis", "Mantė", "Mariana", "Medė", "Miglė", "Nida", "Pakalnutė", "Ramunė", "Rasa", "Ringailė", "Rūta", "Saulė", "Sigutė", "Smilga", "Ugnė", "Urtė", "Ūla", "Vaiva", "Vasara", "Vilgeidė", "Volungė", "Vėja", "Žiedė", "Aušrinė", "Danguolė", "Giedra", "Gintarė", "Inė", "Laurai", "Laime", "Silvija", "Skaidrė", "Valerija", "Violeta", "Živilė"];
+        
+        const maleNames = ["Algirdas", "Alvydas", "Andrius", "Audrius", "Aurimas", "Darius", "Domantas", "Eimantas", "Galminas", "Gedvinas", "Gineitis", "Herkus", "Ipolitas", "Jonas", "Juozas", "Karigaila", "Kazimieras", "Kernis", "Kesgaila", "Kestutis", "Lengvenis", "Liubartas", "Linas", "Mantus", "Mantas", "Margiris", "Martynas", "Mindaugas", "Rimvydas", "Rytis", "Sagintas", "Sakalas", "Saulius", "Sigitas", "Sirtautas", "Skirgaila", "Tauras", "Tautvydas", "Udrys", "Ugnius", "Uosis", "Vakaris", "Vaidotas", "Vainius", "Vytautas", "Vytenis", "Vilius", "Žygimantas", "Benediktas", "Bronius", "Dalius", "Edvardas", "Galvydas", "Gediminas", "Gintaras", "Gintautas", "Jurgis", "Kristupas", "Lionginas", "Marius", "Petras", "Pranas", "Rolandas", "Steponas", "Tadas", "Valentinas", "Vincas", "Vitautas", "Zigmas"];
+
+        let nameCounts = {};
+        let currentFilter = 'all';
+
+        // Cookie functions
+        function saveToCookie() {
+            document.cookie = `nameCounts=${JSON.stringify(nameCounts)}; max-age=${365*24*60*60}; path=/`;
+        }
+
+        function loadFromCookie() {
+            const name = 'nameCounts=';
+            const cookies = document.cookie.split(';');
+            for (let cookie of cookies) {
+                cookie = cookie.trim();
+                if (cookie.indexOf(name) === 0) {
+                    try {
+                        return JSON.parse(cookie.substring(name.length));
+                    } catch (e) {
+                        return {};
+                    }
+                }
+            }
+            return {};
+        }
+
+        // Initialize
+        function initializeNames() {
+            nameCounts = loadFromCookie();
+            
+            // Ensure all names have entries
+            [...femaleNames, ...maleNames].forEach(name => {
+                if (!nameCounts[name]) {
+                    nameCounts[name] = 0;
+                }
+            });
+            
+            renderLists();
+            updateStats();
+        }
+
+        function renderLists() {
+            const femaleList = document.getElementById('femaleList');
+            const maleList = document.getElementById('maleList');
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+
+            femaleList.innerHTML = '';
+            maleList.innerHTML = '';
+
+            const filteredFemale = femaleNames.filter(name => 
+                name.toLowerCase().includes(searchTerm) && 
+                (currentFilter === 'all' || currentFilter === 'female')
+            );
+
+            const filteredMale = maleNames.filter(name => 
+                name.toLowerCase().includes(searchTerm) && 
+                (currentFilter === 'all' || currentFilter === 'male')
+            );
+
+            if (filteredFemale.length === 0 && currentFilter !== 'male') {
+                femaleList.innerHTML = '<div class="empty-message">No female names found</div>';
+            } else {
+                filteredFemale.forEach(name => {
+                    femaleList.appendChild(createNameItem(name));
+                });
+            }
+
+            if (filteredMale.length === 0 && currentFilter !== 'female') {
+                maleList.innerHTML = '<div class="empty-message">No male names found</div>';
+            } else {
+                filteredMale.forEach(name => {
+                    maleList.appendChild(createNameItem(name));
+                });
+            }
+        }
+
+        function createNameItem(name) {
+            const item = document.createElement('div');
+            item.className = 'name-item';
+            item.innerHTML = `
+                <span class="name-text">${name}</span>
+                <div class="name-controls">
+                    <button class="btn-minus" onclick="decrementCount('${name}')">−</button>
+                    <span class="btn-count">${nameCounts[name]}</span>
+                    <button class="btn-plus" onclick="incrementCount('${name}')">+</button>
+                </div>
+            `;
+            return item;
+        }
+
+        function incrementCount(name) {
+            nameCounts[name]++;
+            saveToCookie();
+            renderLists();
+            updateStats();
+        }
+
+        function decrementCount(name) {
+            if (nameCounts[name] > 0) {
+                nameCounts[name]--;
+            }
+            saveToCookie();
+            renderLists();
+            updateStats();
+        }
+
+        function updateStats() {
+            const allNames = [...femaleNames, ...maleNames];
+            const totalUses = allNames.reduce((sum, name) => sum + nameCounts[name], 0);
+            const mostUsedName = allNames.reduce((max, name) => 
+                nameCounts[name] > nameCounts[max] ? name : max
+            );
+
+            document.getElementById('totalCount').textContent = allNames.length;
+            document.getElementById('totalUses').textContent = totalUses;
+            document.getElementById('mostUsed').textContent = nameCounts[mostUsedName] > 0 ? mostUsedName : '-';
+        }
+
+        // Event listeners
+        document.getElementById('searchInput').addEventListener('input', renderLists);
+        
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                e.target.classList.add('active');
+                currentFilter = e.target.dataset.filter;
+                renderLists();
+            });
+        });
+
+        document.getElementById('resetBtn').addEventListener('click', () => {
+            if (confirm('Are you sure you want to reset all counts?')) {
+                [...femaleNames, ...maleNames].forEach(name => {
+                    nameCounts[name] = 0;
+                });
+                saveToCookie();
+                renderLists();
+                updateStats();
+            }
+        });
+
+        // Initialize on load
+        initializeNames();
+    </script>
+
+    <script>
+        // Theme Switching - Based on NorthSpirit's palette swap system
+        const defaultCSS = document.getElementById('themeCSS');
+        const altCSS = document.getElementById('themeCSSAlt');
+        const themeKey = 'LTNamesTheme';
+
+        // Apply theme based on preference
+        function applyTheme(isAlt) {
+            if (!defaultCSS || !altCSS) return;
+            
+            defaultCSS.disabled = isAlt;
+            altCSS.disabled = !isAlt;
+            // Save preference to localStorage
+            localStorage.setItem(themeKey, isAlt ? 'alt' : 'default');
+        }
+
+        // Initialize theme on page load
+        function initTheme() {
+            const cachedTheme = localStorage.getItem(themeKey);
+            if (cachedTheme === 'alt') {
+                applyTheme(true);
+            }
+
+            const paletteSwapBtn = document.getElementById('paletteSwapBtn');
+            if (paletteSwapBtn) {
+                paletteSwapBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const isCurrentlyDefault = altCSS.disabled;
+                    applyTheme(isCurrentlyDefault);
+                });
+            }
+        }
+
+        // Load theme when document is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initTheme);
+        } else {
+            initTheme();
+        }
+    </script>
+</body>
+</html>
